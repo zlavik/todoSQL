@@ -1,2 +1,3 @@
-session-store.db
 node_modules
+session-store.db
+lib/users.sql
