@@ -2,3 +2,4 @@ node_modules
 session-store.db
 lib/users.sql
 .env
+test.sql
