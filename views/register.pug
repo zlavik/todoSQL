@@ -1,0 +1,25 @@
+extends layout
+
+block main
+  form(action=`/register` method="post")
+    dl
+      dt
+        label(for="username") Username:
+      dd
+        input(type="text" name="username" placeholder="username" value=username)
+
+      dt
+        label(for="password") Password:
+      dd
+        input(type="password" name="password" placeholder="password" value=password)
+
+      dt
+        label(for="password2") Re-enter Password:
+      dd
+        input(type="password" name="password2" placeholder="password" value=password2)
+
+    fieldset.actions
+      input(type="submit" value="submit") 
+      a(href='/')  Cancel
+
+block signIn

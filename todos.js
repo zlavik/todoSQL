@@ -12,8 +12,8 @@ const catchError = require("./lib/catch-error");
 
 
 const app = express();
-const host = config.HOST;
-const port = config.PORT;
+const host = "localhost";
+const port = 3000;
 const LokiStore = store(session);
 
 app.set("views", "./views");
@@ -32,7 +32,7 @@ app.use(session({
   name: "launch-school-todos-session-id",
   resave: false,
   saveUninitialized: true,
-  secret: config.SECRET,
+  secret: 'config.SECRET',
   store: new LokiStore({}),
 }));
 
@@ -54,16 +54,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Find a todo with the indicated ID in the indicated todo list. Returns
-// `undefined` if not found. Note that both `todoListId` and `todoId` must be
-// numeric.
-const loadTodo = (todoListId, todoId, todoLists) => {
-  let todoList = loadTodoList(todoListId, todoLists);
-  // let todoList = res.local.store.loadTodoList
-  if (!todoList) return undefined;
 
-  return todoList.todos.find(todo => todo.id === todoId);
-};
 
 // Detect unauthorized access to routes.
 const requiresAuthentication = (req, res, next) => {
@@ -82,6 +73,14 @@ app.get("/users/signin", (req, res) => {
   });
 });
 
+// Render the register page.
+app.get("/register", (req, res) => {
+  req.flash("info", "Please register.");
+  res.render("register", {
+    flash: req.flash(),
+  });
+});
+
 // Handle Sign In form submission
 app.post("/users/signin",
   catchError(async (req, res) => {
@@ -96,6 +95,37 @@ app.post("/users/signin",
         username: req.body.username,
       });
     } else {
+      let session = req.session;
+      session.username = username;
+      session.signedIn = true;
+      req.flash("info", "Welcome!");
+      res.redirect("/lists");
+    }
+  })
+);
+
+// Handle Register form submission
+app.post("/register",
+  catchError(async (req, res) => {
+    let username = req.body.username.trim();
+    let password = req.body.password;
+    let password2 = req.body.password2;
+
+    let userExists = await res.locals.store.checkUserExists(username);
+    if (password !== password2 || password.length < 6 || password2.length < 6)  {
+      req.flash("error", "Enter a matching password that is at least 6 characters long");
+      res.render("register", {
+        flash: req.flash(),
+        username: req.body.username,
+      });
+    } else if (userExists || username.length === 0) {
+      req.flash("error", "Username is taken or invalid!");
+      res.render("register", {
+        flash: req.flash(),
+        username: req.body.username,
+      });
+    } else {
+      await res.locals.store.registerUser(username, password);
       let session = req.session;
       session.username = username;
       session.signedIn = true;
