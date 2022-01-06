@@ -12,8 +12,8 @@ const catchError = require("./lib/catch-error");
 
 
 const app = express();
-const host = "localhost";
-const port = 3000;
+const host = config.HOST;
+const port = config.PORT;
 const LokiStore = store(session);
 
 app.set("views", "./views");
@@ -32,7 +32,7 @@ app.use(session({
   name: "launch-school-todos-session-id",
   resave: false,
   saveUninitialized: true,
-  secret: 'config.SECRET',
+  secret: config.SECRET,
   store: new LokiStore({}),
 }));
 
