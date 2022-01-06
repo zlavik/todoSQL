@@ -29,7 +29,7 @@ app.use(session({
     path: "/",
     secure: false,
   },
-  name: "launch-school-todos-session-id",
+  name: "todos-session-id",
   resave: false,
   saveUninitialized: true,
   secret: config.SECRET,
