@@ -1,5 +1,5 @@
 # todoSQL
-Link to see it in action: https://frozen-beach-59146.herokuapp.com/
+Link to see it in action: https://todo-tasker-app.herokuapp.com/
 
 This is for testing purposes only.
 Just create an account and add any todos.
